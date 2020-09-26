@@ -22,8 +22,8 @@ def GENP(A, b):
                 A[row][col] = A[row][col] - multiplier*A[pivot_row][col]
             #Equation solution column
             b[row] = b[row] - multiplier*b[pivot_row]
-    print(A)
-    print(b)
+    #print(A)
+    #print(b)
     x = np.zeros(n)
     k = n-1
     x[k] = b[k]/A[k,k]
@@ -62,8 +62,8 @@ def GEPP(A, b):
                 A[row][col] = A[row][col] - multiplier*A[k][col]
             #Equation solution column
             b[row] = b[row] - multiplier*b[k]
-    print(A)
-    print(b)
+    #print(A)
+    #print(b)
     x = np.zeros(n)
     k = n-1
     x[k] = b[k]/A[k,k]
@@ -73,13 +73,34 @@ def GEPP(A, b):
     return x
 
 if __name__ == "__main__":
-    #A = np.array([[1.,-1.,1.,-1.],[1.,0.,0.,0.],[1.,1.,1.,1.],[1.,2.,4.,8.]])
-    #b = np.array([[14.],[4.],[2.],[2.]])
+    '''
+    A = np.array([[1.,-1.,1.,-1.],[1.,0.,0.,0.],[1.,1.,1.,1.],[1.,2.,4.,8.]])
+    b = np.array([[14.],[4.],[2.],[2.]])    
+    '''
+    #generate matrix A
     A = np.zeros((84,84))
     A[0][0]=6
+    A[0][1]=1
     A[83][82]=8
     A[83][83]=6
-    print(A)
+    col = 0
+    for row in range(1, 83):
+        A[row][col]  =8
+        A[row][col+1]=6
+        A[row][col+2]=1
+        col=col+1
+    #print(A)
+
+    #generate matrix A
     b = np.zeros((84, 1))
-    #print(GENP(np.copy(A), np.copy(b)))
-    #print(GEPP(A,b))
+    b[0]=7
+    b[83]=14
+    for row in range(1, 83):
+        b[row]=15
+    #print(b)
+
+    print("Gaussian elimination with no pivoting.")
+    print(GENP(np.copy(A), np.copy(b)))
+
+    print("Gaussian elimination with partial pivoting.")
+    print(GEPP(A,b))
