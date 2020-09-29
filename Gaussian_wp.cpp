@@ -8,15 +8,15 @@
 
 using namespace std;
 
-#define __OUTPUT
+//#define __OUTPUT
 
-const int MAXN = 6;//1e2+2;//增广矩阵最大值
-double matrix[MAXN][MAXN];//增广矩阵，注意最后一列答案
+const int MAXN = 1e2+2;
+double matrix[MAXN][MAXN];// augmented matrix
 
-int row;//增广矩阵的实际行
-int col;//增广矩阵的实际列
+int row;//the row of augmented matrix
+int col;//the column of augmented matrix
 
-//输出矩阵
+//test output
 void printM() {
     for (int i=1; i<=row; i++) {
         for (int j=1; j<=col; j++) {
@@ -26,9 +26,9 @@ void printM() {
     }
 }
 
-//选择列主元并进行消元
+//select pivoting
 void SelectColE() {
-    double temp; //用于记录消元时的因数
+    double temp;
     for (int i=1; i<row; i++) {
         int r = i;
         for (int j=i+1; j<=col; j++) {
@@ -38,10 +38,10 @@ void SelectColE() {
         }
         if (r != i) {
             for (int j=i; j<=col; j++) {
-                swap(matrix[i][j], matrix[r][j]);//与最大主元所在行交换
+                swap(matrix[i][j], matrix[r][j]);//exchange
             }
         }
-        for (int j=i+1; j<=row; j++) {//消元
+        for (int j=i+1; j<=row; j++) {//Gaussian elimination
             temp=matrix[j][i]/matrix[i][i];
             for (int k=i; k<=col; k++) {
                 matrix[j][k] -= matrix[i][k]*temp;
@@ -49,18 +49,18 @@ void SelectColE() {
         }
 
 #if defined(__OUTPUT)
-        printf("第%d列消元后：\n", i);
+        printf("%d Gaussian elimination：\n", i);
         printM();
 #endif
     }
 }
 
-//高斯消元法(列选主元)
+//Gaussian elimination with column pivoting
 void Gauss() {
-    SelectColE();//列选主元并消元成上三角
-    printf("上三角的结果：\n");
+    SelectColE();
+    printf("Upper triangular matrix：\n");
     printM();
-    for (int i=row; i>=1; i--) {//回代求解
+    for (int i=row; i>=1; i--) {
         for (int j=i+1; j<=row; j++) {
             matrix[i][col] -= matrix[i][j] * matrix[j][col];
         }
@@ -68,27 +68,30 @@ void Gauss() {
     }
 }
 
-//测试函数
 int main() {
     //freopen("gaussian.out", "w", stdout);
 
-#if 0
-    row=3;
-    col=4;
+#if 1
+    //定义作业的行列
+    row=84;
+    col=85;
 
-    //测试用
-    matrix[1][1] = 1;
-    matrix[1][2] = 3;
-    matrix[1][3] = 4;
-    matrix[1][4] = 5;
-    matrix[2][1] = 1;
-    matrix[2][2] = 4;
-    matrix[2][3] = 7;
-    matrix[2][4] = 3;
-    matrix[3][1] = 9;
-    matrix[3][2] = 3;
-    matrix[3][3] = 2;
-    matrix[3][4] = 2;
+    //第1行
+    matrix[1][1] = 6;
+    matrix[1][2] = 1;
+    matrix[1][85] = 7;
+    //第84行
+    matrix[84][83] = 8;
+    matrix[84][84] = 6;
+    matrix[84][85] = 14;
+    int t=1;
+    for (int i=2; i<84; i++) {
+        matrix[i][t+0] = 8;
+        matrix[i][t+1] = 6;
+        matrix[i][t+2] = 1;
+        matrix[i][85]  = 15;
+        t++;
+    }
 #else
     cin>>row;
     col=row+1;
@@ -100,9 +103,12 @@ int main() {
 #endif
 
     Gauss();
+    
+    printf("The answer is:\n");
     for (int i=1; i<=row; i++) {
-        printf("X%d = %10.2f\n", i, matrix[i][col]);
+        printf("X%d = %14.10lf\n", i, matrix[i][col]);
     }
+    system("pause");
 
     return 0;
 }
